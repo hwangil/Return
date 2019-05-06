@@ -26,7 +26,7 @@ public class CMMain {
 
 		URL url = Resources.getResource("article_info.json");
 		String articleContent = new String(Files.readAllBytes(Paths.get(url.toURI())));
-		List<ArticleInfo> articles = Parsers.fromJsons(articleContent, ArticleInfo.class);
+		List<ArticleInfo> articles = Parsers.fromJsons(articleContent, ArticleInfo.class, true);
 		
 		articles.stream().forEach(article -> {
 			System.out.println(article.getCompany());
@@ -34,7 +34,7 @@ public class CMMain {
 				CloseableHttpResponse response = client.execute(new HttpGet(article.getRssUrl()));
 				String content = EntityUtils.toString(response.getEntity(), "UTF-8");
 				System.out.println(Parsers.xmlToJson(content));
-				Rss rss = Parsers.fromJson(Parsers.xmlToJson(content), Rss.class);
+				Rss rss = Parsers.fromJson(Parsers.xmlToJson(content), Rss.class, true);
 				rss.getChannel().getItems().stream().forEach(x -> {
 						try {
 							System.out.println(">>>>>>> "+x.getLink());
