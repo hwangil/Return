@@ -2,7 +2,7 @@ package com.samsung.gilsoo.cm.article.parser;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ArticleInfo {
+public class ArticleParseInfo {
 	@JsonProperty("company")
 	String company;
 	@JsonProperty("title")
