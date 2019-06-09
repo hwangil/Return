@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,11 +23,18 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import com.samsung.gilsoo.cm.article.model.ArticleInfo;
 import com.samsung.gilsoo.cm.article.parser.ArticleParseInfo;
 import com.samsung.gilsoo.cm.rss.model.Rss;
@@ -34,7 +42,31 @@ import com.samsung.gilsoo.parser.Parsers;
 
 // Crawling Manager
 public class CMMain {
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	public static void main(String[] args) throws IOException, URISyntaxException, TimeoutException {
+		ConnectionFactory connFactory = new ConnectionFactory();
+		connFactory.setHost("127.0.0.1");
+		Connection conn = connFactory.newConnection();
+		Channel channel = conn.createChannel();
+//		channel.queueDeclare("gilQueue2", false, false, false, null);
+		
+		channel.basicPublish("amqp.direct", "foo", null, new String("Hi GILSOO ! ").getBytes());
+		channel.close();
+		conn.close();
+	}
+
+	private static void springRabbitMq() {
+		CachingConnectionFactory cf = new CachingConnectionFactory("127.0.0.1", 5672);
+		cf.setUsername("guest");
+		cf.setPassword("guest");
+				
+		RabbitTemplate template = new RabbitTemplate(cf);
+		template.setExchange("amqp.direct");
+		template.setQueue("gilQueue");
+		template.convertAndSend("foo", "Hi gilsoo..!!");
+		cf.destroy();
+	}
+	
+	private void crawling() throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		CloseableHttpClient client = HttpClients.createDefault();
 
 		URL url = Resources.getResource("article_parse_info.json");
@@ -89,10 +121,6 @@ public class CMMain {
 			});
 		});
 		
-		
 		elasticClient.close();
-		
-			
-
 	}
 }

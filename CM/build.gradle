@@ -39,6 +39,10 @@ dependencies {
 	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:6.5.4'
 	// komoran
 	implementation 'com.github.shin285:KOMORAN:3.3.4'
+	// spring rabbit mq
+	implementation group: 'org.springframework.amqp', name: 'spring-rabbit', version: '1.3.9.RELEASE'
+	// rabbit mq
+	compile group: 'com.rabbitmq', name: 'amqp-client', version: '3.6.6'
 	
     testImplementation 'junit:junit:4.12'
 }
