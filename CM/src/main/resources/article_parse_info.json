@@ -1,0 +1,26 @@
+[
+  {
+    "company": "joongang",
+    "title": "#article_title",
+    "content": "#article_body",
+    "rss_url": "https://rss.joins.com/joins_it_list.xml"
+  },
+  {
+    "company": "hangyul",
+    "title": ".article-head .title",
+    "content": ".article-text .text",
+    "rss_url": "http://www.hani.co.kr/rss/science/"
+  },
+  {
+    "company": "kynghyang",
+    "title": "#articleTtitle",
+    "content": ".art_body",
+    "rss_url": "http://www.khan.co.kr/rss/rssdata/it_news.xml"
+  },
+  {
+    "company": "donga",
+    "title": ".article_title .title",
+    "content": ".article_view .article_txt",
+    "rss_url": "http://rss.donga.com/science.xml"
+  }
+]
